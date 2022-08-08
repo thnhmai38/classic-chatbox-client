@@ -1,7 +1,7 @@
 <h1 align="center">classic-chatbox-client</h1>
 
 <p align="center">Một chatbox đơn giản chỉ sử dụng API. Không dùng webhook</p>
-<p align="center">Đây là Client của <b>classic-chatbox</b>. Click vào đây để chuyển sang Server</p>
+<p align="center">Đây là Client của <b>classic-chatbox</b>. Click vào <a href="https://github.com/thanhgaming5550/classic-chatbox-server">đây</a> để chuyển sang Server</p>
 
 #### Hướng dẫn sử dụng:
 - B1: Hãy chắc chắn rằng Server đã được khởi động và có thể kết nối được từ client. 
