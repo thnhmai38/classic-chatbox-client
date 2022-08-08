@@ -5,7 +5,7 @@
 
 #### Hướng dẫn sử dụng:
 - B1: Hãy chắc chắn rằng Server đã được khởi động và có thể kết nối được từ client. 
-- B2: Trong dòng 1 của `script.js`, thay đổi xâu thành địa chỉ của server (nhớ không có dấu `/` ở cuối)
+- B2: Trong dòng 1 của `script.js`, thay đổi xâu thành địa chỉ của server (nhớ bao gồm dấu `/` ở cuối)
 - B3: Mở `index.html`
 
 #### Thông tin khác:
