@@ -1,6 +1,6 @@
 <h1 align="center">classic-chatbox-client</h1>
 
-<p align="center">Một chatbox đơn giản sủ dụng WebSocket. Là một phiên bản nâng cấp của <a href="https://github.com/thanhgaming5550/classic-chatbox-client/tree/v1">Client API</a> nhằm tương thích với Server WebSocket.</p>
+<p align="center">Một chatbox đơn giản sủ dụng WebSocket. Là một phiên bản nâng cấp của <a href="https://github.com/thanhgaming5550/classic-chatbox-client/tree/v1">Client API</a> nhằm tương thích với Server WebSocket để có thể sử dụng các chức năng của nó.</p>
 <p align="center">Đây là Client của <b>classic-chatbox</b>. Click vào <a href="https://github.com/thanhgaming5550/classic-chatbox-server/tree/v2">đây</a> để chuyển sang Server</p>
 
 <h2 align="center">CHÚ Ý: PHIÊN BẢN NÀY VẪN ĐANG TRONG QUÁ TRÌNH XÂY DỰNG/CODE!</h2>
