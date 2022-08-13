@@ -53,19 +53,21 @@ html {
 }
 
 #username {
-    margin-right: 10%;
-    margin-left: 10%;
-    margin-top: 10px;
     width: 10%;
 }
 
 #noidung {
     margin-top: 10px;
-    margin-left: -10%;
-    width: 65%;
+    margin-left: 10%;
+    width: 79.4%;
     text-align: center;
 }
 
 .chat#send:hover {
     background-color: aliceblue;
+}
+
+#alert p {
+    margin-top: 12px;
+    margin-bottom: 2px;
 }

@@ -12,20 +12,18 @@
 <body>
     <div class="title">
         <h1 style="margin-bottom: 1px; margin-top: 5px;">CHATBOX</h1>
-        <p style="margin-top: 10px;" id="subtitle">Tự động cập nhật chat sau mỗi <input id="autoupdate" placeholder="" value="5" style="width: 1rem"> giây | Chỉ sử dụng <a id="apihome" target=”_blank”>API</a> | <button onclick="getfull(); document.getElementById('fullupdate').textContent = 'Đang cập nhật...'; document.getElementById(`fullupdate`).setAttribute('disabled', true);" id="fullupdate">Cập nhật tất cả</button></p>
+        <div id="alert"><p>Javasript chưa được load! Để sử dụng các chức năng của web, bạn phải Bật Javasript</p></div>
     </div>
     <div id="main">
         <div id="content">
             <!-- Chat will be shown here -->
         </div>
         <div>
-            <script src="script.js"></script>
-            <input class="chat" type="text" placeholder="Biệt danh" id="username">
             <input class="chat" type="text" placeholder="Nội dung" id="noidung">
-            <button class="chat" id="send" onclick="send()">Gửi</button>
+            <button class="chat" id="send" onclick="send()" disabled>Gửi</button>
         </div>
     </div>
-
+    <script src="script.js"></script>
 </body>
 
 </html>
