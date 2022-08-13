@@ -69,6 +69,7 @@ function connect() {
 	})
 
 	socket.addEventListener('close', (e) => {
+		alert("Đã ngắt kết nối tới Server!")
 		isConnected = false;
 		document.getElementById("alert").innerHTML = noconnect
 	})
