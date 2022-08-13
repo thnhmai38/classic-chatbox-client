@@ -103,13 +103,6 @@ function connect() {
 		}
 	});
 }
-				break;
-			
-			case "get":
-				switch (data.status) {
-					case true:
-
-						break;
 
 function disconnect() {
 	socket.close()
