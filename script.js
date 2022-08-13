@@ -3,9 +3,9 @@ var socket;
 
 var savenamebutton = `<button id="savenamebutton" onclick="saveusername()" hidden="true">Lưu</button>`
 const connectbutton = "<button id=\"connect\" onclick=\"connect()\">Kết nối với Server</button>"
-const disconnectbutton = "<button id=\"disconnect\" onclick=\"disconnect()\">Ngắt kết nối với Server</button>"
-const noconnect = `<p><input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Chưa kết nối với Server | ` + connectbutton + "</p>"
-const connected = `<p><input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Đã kết nối với Server | ` + disconnectbutton + "</p>"
+const disconnectbutton = "<button id=\"disconnect\" onclick=\"disconnect();\">Ngắt kết nối với Server</button>"
+const noconnect = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username" disabled> ${savenamebutton} | <b>Trạng thái: </b>Chưa kết nối với Server | ` + connectbutton + "</p>"
+const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Đã kết nối với Server | ` + disconnectbutton + "</p>"
 document.getElementById("alert").innerHTML = noconnect
 
 var username = "";
@@ -40,8 +40,9 @@ function changeusername(e) {
 
 function saveusername() {
 	if (!isConnected) return alert("Bạn chưa kết nối với Server!")
-	username = document.getElementById('username').value;
 	hidesavebutton()
+	username = document.getElementById('username').value;
+	socket.send(`{"type":"change", "name":"${username}"}`)
 }
 
 document.getElementById('username').addEventListener('change', changeusername)
@@ -63,12 +64,18 @@ function connect() {
 
 	socket.addEventListener('error', (event) => {
 		alert("Không thể kết nối tới Server!")
+		isConnected = false;
+		document.getElementById("alert").innerHTML = noconnect
+	})
+
+	socket.addEventListener('close', (e) => {
+		isConnected = false;
 		document.getElementById("alert").innerHTML = noconnect
 	})
 
 	socket.addEventListener('open', (event) => {
 		document.getElementById("alert").innerHTML = connected
-		socket.send(`{"type":"get"}`)
+		isConnected = true;
 	});
 
 	socket.addEventListener('message', (event) => {
@@ -105,7 +112,7 @@ function connect() {
 }
 
 function disconnect() {
-	socket.close()
+	socket.close();
 	document.getElementById("alert").innerHTML = noconnect
 	delayconnect();
 }
