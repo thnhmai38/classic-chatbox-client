@@ -5,6 +5,7 @@ const server = "ws://127.0.0.1:5000"
 	var username = "";
 	var isConnected = false;
 	var MessageQueue = [];
+	var connectdelay = false;
 //? HTMLQueryVariable: Các biến chứa nội dung HTML [savenamebutton, connectbutton, disconnectbutton, getbutton, noconnect, connected]
 var savenamebutton = `<button id="savenamebutton" onclick="saveusername()" hidden="true">Lưu</button>`
 const connectbutton = "<button id=\"connect\" onclick=\"connect()\">Kết nối với Server</button>"
@@ -104,6 +105,18 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 	}
 
 	function delayconnect() {
+		connectdelay = true;
+		document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
+		isConnected = false;
+		document.getElementById("alert").innerHTML = noconnect
+		document.getElementById('username').removeEventListener('input', changeusername)
+		hidesavebutton()
+		username = "";
+		if (document.getElementById('noidung').value.length > 0) {
+			disablesend(true)
+			document.getElementById('noidung').addEventListener('input', disablecontentafterdisconnect)
+		} else (disablesend(false))
+
 		document.getElementById("connect").textContent = "Vui lòng đợi 3s để có thể Kết nối lại"
 		document.getElementById("connect").setAttribute("disabled", true)
 		setTimeout(() => {
@@ -169,17 +182,19 @@ function connect() {
 		document.getElementById("alert").innerHTML = noconnect
 	})
 
-	socket.addEventListener('close', (e) => {
-		document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
-		isConnected = false;
-		document.getElementById("alert").innerHTML = noconnect
-		document.getElementById('username').removeEventListener('input', changeusername)
-		hidesavebutton()
-		username = "";
-		if (document.getElementById('noidung').value.length > 0) {
-			disablesend(true)
-			document.getElementById('noidung').addEventListener('input', disablecontentafterdisconnect)
-		} else (disablesend(false))
+	socket.addEventListener('close', (event) => {
+		if (connectdelay === false) {
+			document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
+			isConnected = false;
+			document.getElementById("alert").innerHTML = noconnect
+			document.getElementById('username').removeEventListener('input', changeusername)
+			hidesavebutton()
+			username = "";
+			if (document.getElementById('noidung').value.length > 0) {
+				disablesend(true)
+				document.getElementById('noidung').addEventListener('input', disablecontentafterdisconnect)
+			} else (disablesend(false))
+		} else connectdelay = true;
 	})
 
 	socket.addEventListener('open', (event) => {
