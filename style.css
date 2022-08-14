@@ -1,13 +1,7 @@
 html {
     margin: 0;
     background-color: aquamarine;
-    height: 100%;
-    width: 100%;
-}
-
-body {
-    height: 98%;
-    width: 99%;
+    height: auto;
 }
 
 .title {
@@ -16,9 +10,9 @@ body {
 }
 
 #main {
-    margin: 0px;
-    width: calc(100%-10px);
-    height: 85%;
+    margin-right: 10%;
+    margin-left: 10%;
+    margin-top: 15px;
 }
 
 #content {
@@ -34,12 +28,12 @@ body {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     
-    margin-right: 20%;
-    margin-left: 20%;
+    margin-right: 10%;
+    margin-left: 10%;
     margin-top: 15px;
     
-    width: calc(100% - 20% - 20%); /* = 100% - margin-right - margin-left*/
-    height: 90%;
+    width: 80%;
+    height: 30rem;
     box-sizing: border-box;
 
     overflow-y: auto;
@@ -58,12 +52,6 @@ body {
     height: 2em;
 }
 
-#sendzone {
-    margin-top: 10px;
-    margin-right: 20%; /* = #content.margin-right*/
-    margin-left: 20%; /* = #content.margin-left*/
-}
-
 #username {
     margin-right: 10%;
     margin-left: 10%;
@@ -76,10 +64,6 @@ body {
     margin-left: -10%;
     width: 65%;
     text-align: center;
-}
-
-#send {
-    width: 45px
 }
 
 .chat#send:hover {
