@@ -307,15 +307,15 @@ function connect() {
 						break;
 				
 					case "register":
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã tham gia chat"</p>`;
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã tham gia chat</p>`;
 						break;
 
 					case "message":
-						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${data.timestamp}</i></p>`
 						break;
 
 					case "leave":
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã rời chat"</p>`;
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã rời khỏi chat</p>`;
 						break;
 				}
 
