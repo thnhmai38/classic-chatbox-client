@@ -1,25 +1,34 @@
 const server = "ws://127.0.0.1:5000"
 
-//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected]
+//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected, MessageQueue]
 	var socket;
 	var username = "";
 	var isConnected = false;
-//? HTMLQueryVariable: Các biến chứa nội dung HTML [savenamebutton, connectbutton, disconnectbutton, noconnect, connected]
+	var MessageQueue = [];
+//? HTMLQueryVariable: Các biến chứa nội dung HTML [savenamebutton, connectbutton, disconnectbutton, getbutton, noconnect, connected]
 var savenamebutton = `<button id="savenamebutton" onclick="saveusername()" hidden="true">Lưu</button>`
 const connectbutton = "<button id=\"connect\" onclick=\"connect()\">Kết nối với Server</button>"
 const disconnectbutton = "<button id=\"disconnect\" onclick=\"disconnect();\">Ngắt kết nối với Server</button>"
+const getbutton = "<button onclick=\"get()\" id=\"updatebutton\">Cập nhật</button>"
 const noconnect = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username" disabled> ${savenamebutton} | <b>Trạng thái: </b>Chưa kết nối với Server | ` + connectbutton + "</p>"
-const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Đã kết nối với Server | ` + disconnectbutton + "</p>"
+const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Đã kết nối với Server | ` + disconnectbutton + " " + getbutton + "</p>"
 
 //? Method: Các Thủ tục gửi tin nhắn lên Server [nameaction(), get(), send()]
 	function nameaction(name) {
 		socket.send(`{"type":"name", "name":"${name}"}`)
 	}
 	function get() {
+		inupdate()
 		socket.send(`{"type":"get"}`)
 	}
 	function send(content) {
+		if (content.length < 1 || content.length > 4000) return alert("Nội dung tin nhắn có ít nhất 1 ký tự và nhiều nhất 4000 ký tự!")
 		socket.send(`{"type":"send", "content":"${content}"}`)
+		MessageQueue.push({
+			'name': username,
+			'content': content
+		})
+		document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;" class="QueueMessage"> <b>${username}:</b> ${content} <br> <i style="font-size: smaller;">Đang gửi...</i></p>`
 	}	
 //? SaveButton: Các thủ tục xoay quanh nút Lưu Biệt danh [hidesavebutton(), showsavebutton()]
 	function hidesavebutton() {
@@ -85,6 +94,36 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 		}, 3000);
 	}
 
+	function disablecontentafterdisconnect() {
+		if (isConnected == true) {
+			document.getElementById('noidung').removeEventListener('input', disablecontentafterdisconnect)
+		} else {
+			if (document.getElementById('noidung').value.length === 0) {
+				disablesend(false)
+				document.getElementById('noidung').removeEventListener('input', disablecontentafterdisconnect)
+			}
+		}
+	}
+
+//? UpdateButton: Các thủ tục liên quan đến nút Cập nhật [inupdate(), afterupdate()]
+	function inupdate() {
+		document.getElementById("updatebutton").textContent = "Đang cập nhật..."
+		document.getElementById("updatebutton").setAttribute("disabled", true)
+	}
+
+	function afterupdate() {
+		document.getElementById("updatebutton").removeAttribute("disabled")
+		document.getElementById("updatebutton").textContent = "Cập nhật"
+	}
+
+function find(array, name, content) {
+	const query = {
+		'name': name,
+		'content': content
+	}
+	return array.indexOf(query)
+}
+
 document.getElementById("alert").innerHTML = noconnect
 
 function connect() {
@@ -103,11 +142,17 @@ function connect() {
 		document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
 		isConnected = false;
 		document.getElementById("alert").innerHTML = noconnect
+		document.getElementById('username').removeEventListener('input', changeusername)
+		hidesavebutton()
+		if (document.getElementById('noidung').value.length > 0) {
+			disablesend(true)
+			document.getElementById('noidung').addEventListener('input', disablecontentafterdisconnect)
+		} else (disablesend(false))
 	})
 
 	socket.addEventListener('open', (event) => {
 		document.getElementById("alert").innerHTML = connected
-		document.getElementById('username').addEventListener('change', changeusername)
+		document.getElementById('username').addEventListener('input', changeusername)
 		isConnected = true;
 	});
 
@@ -178,7 +223,15 @@ function connect() {
 			case "get":
 				switch (data.status) {
 					case true:
-						// TODO: Cập nhật sau
+						document.getElementById("content").innerHTML = "\t<!-- Chat will be shown here -->"
+						for (const tinnhan of data.data.message) {
+							if (tinnhan.name == username) {
+								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+							} else {
+								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-right: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+							}
+						}
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tin nhắn</p>`;
 						break;
 				
 					case false:
@@ -198,9 +251,53 @@ function connect() {
 						}
 						break;
 				}
+				afterupdate();
 				break;
 		
-		// TODO: Còn thiếu 2 case "send" và "receive"
+			case "send":
+				let arr = document.getElementsByClassName("QueueMessage")
+				let pos = find(MessageQueue, data.name, data.content)
+				switch (data.status) {
+					case true:
+						for (const html of arr) {
+							if (html.innerHTML == ` <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
+								html.classList.remove("QueueMessage")
+								html.innerHTML = ` <b>${username}:</b> ${content} <br> <i style="font-size: smaller;">Bạn đã gửi thành công vào lúc ${data.timestamp}</i>`
+								MessageQueue.splice(pos, 1)
+								break;
+							}
+						}
+						break;
+					case false:
+						for (const html of arr) {
+							if (html.innerHTML == ` <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
+								html.classList.remove("QueueMessage")
+								let lydo = "";
+								switch (data.reason) {
+									case "UnknownRegister":
+										lydo = "Bạn chưa đăng ký"
+										break;
+									
+									case "ErrorWhenSend":
+										lydo = "[Server] " + data.error;
+										break;
+
+									case "WrongFormatContent":
+										lydo = "Nội dung tin nhắn có ít nhất 1 ký tự và nhiều nhất 4000 ký tự"
+										break;
+
+									default:
+										lydo = "Lỗi: " + data.reason
+										break;
+								}
+								html.innerHTML = ` <b>${username}:</b> ${content} <br> <i style="font-size: smaller; color: red;">Bạn đã gửi tin nhắn thất bại: ${lydo}</i>`
+								MessageQueue.splice(pos, 1)
+								break;
+							}
+						}
+						break;
+				}
+		// TODO: Còn thiếu case "receive"
 		}
 	});
 }

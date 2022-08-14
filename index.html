@@ -20,7 +20,7 @@
         </div>
         <div id="sendzone">
             <input class="chat" type="text" placeholder="Nội dung" id="noidung" disabled>
-            <button class="chat" id="send" onclick="send()" disabled>Gửi</button>
+            <button class="chat" id="send" onclick="send(document.getElementById('noidung').value);" disabled>Gửi</button>
         </div>
     </div>
     <script src="script.js"></script>
