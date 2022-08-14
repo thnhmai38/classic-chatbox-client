@@ -1,7 +1,9 @@
 <h1 align="center">classic-chatbox-client</h1>
 
-<p align="center">Một chatbox đơn giản chỉ sử dụng API. Không dùng webhook hay websocket</p>
+<p align="center">Một chatbox đơn giản chỉ sử dụng API. Không dùng webhook hay websocket. <a href="https://github.com/thanhgaming5550/classic-chatbox-client/tree/v2">Bản WebSocket</a>.</p>
 <p align="center">Đây là Client của <b>classic-chatbox</b>. Click vào <a href="https://github.com/thanhgaming5550/classic-chatbox-server/tree/v1">đây</a> để chuyển sang Server</p>
+
+<h4 align="center">PHIÊN BẢN V1 NÀY SẮP BỊ NGỪNG HỖ TRỢ! LỖI, SAI SÓT HAY BẤT CỨ GÌ LIÊN QUAN SẼ KHÔNG ĐƯỢC SỬA TRONG TƯƠNG LAI!</h4>
 
 #### Hướng dẫn sử dụng:
 - B1: Hãy chắc chắn rằng Server đã được khởi động và có thể kết nối được từ client. 
