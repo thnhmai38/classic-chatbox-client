@@ -299,7 +299,27 @@ function connect() {
 						}
 						break;
 				}
-		// TODO: Còn thiếu case "receive", null
+
+			case "receive":
+				switch (data.datatype) {
+					case "change":
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.oldname}</b> đã đổi biệt danh thành "<b>${data.newname}</b>"</p>`;
+						break;
+				
+					case "register":
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã tham gia chat"</p>`;
+						break;
+
+					case "message":
+						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-right: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+						break;
+
+					case "leave":
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã rời chat"</p>`;
+						break;
+				}
+
+			default: break;
 		}
 	});
 }
