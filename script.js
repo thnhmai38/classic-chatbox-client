@@ -144,6 +144,7 @@ function connect() {
 		document.getElementById("alert").innerHTML = noconnect
 		document.getElementById('username').removeEventListener('input', changeusername)
 		hidesavebutton()
+		username = "";
 		if (document.getElementById('noidung').value.length > 0) {
 			disablesend(true)
 			document.getElementById('noidung').addEventListener('input', disablecontentafterdisconnect)
@@ -162,11 +163,12 @@ function connect() {
 			case "name":
 				switch (data.status) {
 					case true:
+						enablesend();
 						switch (data.action) {
 							case "register":
 								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đăng ký biệt danh "<b>${data.name}</b>" thành của mình</p>`;
 								username = data.name;
-								hidesavebutton();
+								hidesavebutton(); get();
 								break;
 							case "change":
 								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đổi biệt danh "<b>${data.oldname}</b>" của mình thành "<b>${data.newname}</b>"</p>`;
@@ -262,7 +264,7 @@ function connect() {
 						for (const html of arr) {
 							if (html.innerHTML == ` <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
 								html.classList.remove("QueueMessage")
-								html.innerHTML = ` <b>${username}:</b> ${content} <br> <i style="font-size: smaller;">Bạn đã gửi thành công vào lúc ${data.timestamp}</i>`
+								html.innerHTML = ` <b>${username}:</b> ${data.content} <br> <i style="font-size: smaller;">Bạn đã gửi thành công vào lúc ${data.timestamp}</i>`
 								MessageQueue.splice(pos, 1)
 								break;
 							}
