@@ -65,11 +65,16 @@ body {
 }
 
 #username {
+    margin-right: 10%;
+    margin-left: 10%;
+    margin-top: 10px;
     width: 10%;
 }
 
-#noidung {  
-    width: calc(100% - 10px - 45px);
+#noidung {
+    margin-top: 10px;
+    margin-left: -10%;
+    width: 65%;
     text-align: center;
 }
 
@@ -79,9 +84,4 @@ body {
 
 .chat#send:hover {
     background-color: aliceblue;
-}
-
-#alert p {
-    margin-top: 12px;
-    margin-bottom: 2px;
 }
