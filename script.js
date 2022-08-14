@@ -6,6 +6,19 @@ var errorsubtitle = `<p style="margin-top: 10px;" id="subtitle"><b>Chưa kết n
 var isconnect = false;
 var firstfullload = false;
 
+function escapeHtml(text) {
+	// Thank this too much: https://stackoverflow.com/questions/1787322/what-is-the-htmlspecialchars-equivalent-in-javascript
+	var map = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#039;'
+	};
+	
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 function noconnect() {
 	isconnect = false;
 	console.error("Không thể kết nối với Server!")
@@ -43,19 +56,19 @@ function send() {
 	document.getElementById(`send`).textContent = "Đang gửi...";
 	document.getElementById(`send`).setAttribute("disabled", true);
 
-	fetch(server + `send/?name=${username}&content=${content}`)
+	fetch(server + `send/?name=${encodeURIComponent(username)}&content=${encodeURIComponent(content)}`)
 		.then((r) => r.json())
 		.then((r) => {
 			if (r.sent === true) {
 				console.log(`Đã gửi tin nhắn: [${username}: ${content}]`);
 				document.getElementById(`content`).innerHTML =
 					document.getElementById(`content`).innerHTML +
-					`\n<p><div style="background-color: rgb(218, 255, 218); color: grey; text-align: right; border-right: 3.5px solid green"><b style="color: dark;"><details style="margin-right: 7px;"><summary style="color: black;">Gửi tin nhắn thành công</summary><p style="margin-right: 7px;">${content}<br><i style="font-size: smaller;">Bạn đã gửi lúc ${r.timestamp} dưới tên <b>${username}</b></i></p></p></details></div><br>`;
+					`\n<p><div style="background-color: rgb(218, 255, 218); color: grey; text-align: right; border-right: 3.5px solid green"><b style="color: dark;"><details style="margin-right: 7px;"><summary style="color: black;">Gửi tin nhắn thành công</summary><p style="margin-right: 7px;">${escapeHtml(content)}<br><i style="font-size: smaller;">Bạn đã gửi lúc ${r.timestamp} dưới tên <b>${escapeHtml(username)}</b></i></p></p></details></div><br>`;
 			} else {
 				console.warn(`Gửi thất bại: [${username}: ${content}]`);
 				document.getElementById(`content`).innerHTML =
 					document.getElementById(`content`).innerHTML +
-					`\n<p><div style="background-color: rgb(255, 181, 181); color: grey; text-align: right; border-right: 3.5px solid red"><b style="color: dark;"><details style="margin-right: 7px;"><summary style="color: black;">Gửi tin nhắn thất bại</summary><p style="margin-right: 7px;">${content}</p></p></details></div><br>`;
+					`\n<p><div style="background-color: rgb(255, 181, 181); color: grey; text-align: right; border-right: 3.5px solid red"><b style="color: dark;"><details style="margin-right: 7px;"><summary style="color: black;">Gửi tin nhắn thất bại</summary><p style="margin-right: 7px;">${escapeHtml(content)}</p></p></details></div><br>`;
 			}
 			document.getElementById(`noidung`).value = "";
 			document.getElementById(`send`).removeAttribute("disabled");
@@ -88,10 +101,10 @@ function getfull() {
 					msgcount++;
 					if (message.name == document.getElementById(`username`).value) {
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML +
-					`\n<p style="text-align: right; margin-right: 7px;"><b>[${message.name}] </b>${message.content}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
+					`\n<p style="text-align: right; margin-right: 7px;"><b>[${escapeHtml(message.name)}] </b>${escapeHtml(message.content)}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
 					} else {
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML +
-					`\n<p style="margin-left: 7px"><b>[${message.name}] </b>${message.content}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
+					`\n<p style="margin-left: 7px"><b>[${escapeHtml(message.name)}] </b>${escapeHtml(message.content)}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
 					}
 				}
 				document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p style="text-align: center; font-size: x-small; color: grey;">Cập nhật toàn bộ tin nhắn thành công</p>`
@@ -104,7 +117,7 @@ function getfull() {
 				document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p style="text-align: center; font-size: x-small; color: grey;">Cập nhật toàn bộ tin nhắn thất bại</p>`
 				alert("Cập nhật toàn bộ tin nhắn thất bại! Vui lòng thử lại!")
 				console.warn("Cập nhật tất cả tin nhắn thất bại")
-				document.getElementById(`subtitle`).innerHTML = `<p style="margin-top: 10px;" id="subtitle"><b>Cập nhật toàn bộ thất bại</b> | Chỉ sử dụng <a id="apihome" target=”_blank”>API</a> | <button onclick="getfull(); document.getElementById('fullupdate').textContent = 'Đang cập nhật...'; document.getElementById(\`fullupdate\`).setAttribute('disabled', true);" id="fullupdate">Cập nhật tất cả</button></p>`;;
+				document.getElementById(`subtitle`).innerHTML = `<p style="margin-top: 10px;" id="subtitle"><b>Cập nhật toàn bộ thất bại</b> | Chỉ sử dụng <a id="apihome" target=”_blank”>API</a> | <button onclick="getfull(); document.getElementById('fullupdate').textContent = 'Đang cập nhật...'; document.getElementById(\`fullupdate\`).setAttribute('disabled', true);" id="fullupdate">Cập nhật tất cả</button></p>`;
 				document.getElementById(`fullupdate`).removeAttribute("disabled");
 				document.getElementById("fullupdate").textContent = "Cập nhật tất cả";
 			}
@@ -131,10 +144,10 @@ function get() {
 						msgcount++;
 						if (message.name == document.getElementById(`username`).value) {
 							document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML +
-						`\n<p style="text-align: right; margin-right: 7px;"><b>[${message.name}] </b>${message.content}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
+						`\n<p style="text-align: right; margin-right: 7px;"><b>[${escapeHtml(message.name)}] </b>${escapeHtml(message.content)}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
 						} else {
 							document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML +
-						`\n<p style="margin-left: 7px"><b>[${message.name}] </b>${message.content}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
+						`\n<p style="margin-left: 7px"><b>[${escapeHtml(message.name)}] </b>${escapeHtml(message.content)}<br><i style="font-size: smaller;">Đã được gửi vào lúc ${message.timestamp}</i></p>`;
 						}
 					}
 				}
