@@ -15,7 +15,11 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 
 //? Method: Các Thủ tục gửi tin nhắn lên Server [nameaction(), get(), send()]
 	function nameaction(name) {
-		socket.send(`{"type":"name", "name":"${name}"}`)
+		input = {
+			"type": "name",
+			"name": name
+		}
+		socket.send(JSON.stringify(input))
 	}
 	function get() {
 		inupdate()
@@ -23,12 +27,17 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 	}
 	function send(content) {
 		if (content.length < 1 || content.length > 4000) return alert("Nội dung tin nhắn có ít nhất 1 ký tự và nhiều nhất 4000 ký tự!")
-		socket.send(`{"type":"send", "content":"${content}"}`)
+		input = {
+			"type": "send",
+			"content": content
+		}
+		socket.send(JSON.stringify(input))
 		MessageQueue.push({
 			'name': username,
 			'content': content
 		})
-		document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;" class="QueueMessage"> <b>${username}:</b> ${content} <br> <i style="font-size: smaller;">Đang gửi...</i></p>`
+		document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;" class="QueueMessage"> <b>${escapeHtml(username)}:</b> ${escapeHtml(content)} <br> <i style="font-size: smaller;">Đang gửi...</i></p>`
+		document.getElementById("noidung").value = "";
 	}	
 //? SaveButton: Các thủ tục xoay quanh nút Lưu Biệt danh [hidesavebutton(), showsavebutton()]
 	function hidesavebutton() {
@@ -124,6 +133,19 @@ function find(array, name, content) {
 	return array.indexOf(query)
 }
 
+function escapeHtml(text) {
+	// Thank this too much: https://stackoverflow.com/questions/1787322/what-is-the-htmlspecialchars-equivalent-in-javascript
+	var map = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#039;'
+	};
+	
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 document.getElementById("alert").innerHTML = noconnect
 
 function connect() {
@@ -166,12 +188,12 @@ function connect() {
 						enablesend();
 						switch (data.action) {
 							case "register":
-								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đăng ký biệt danh "<b>${data.name}</b>" thành của mình</p>`;
+								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đăng ký biệt danh "<b>${escapeHtml(data.name)}</b>" thành của mình</p>`;
 								username = data.name;
 								hidesavebutton(); get();
 								break;
 							case "change":
-								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đổi biệt danh "<b>${data.oldname}</b>" của mình thành "<b>${data.newname}</b>"</p>`;
+								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đổi biệt danh "<b>${escapeHtml(data.oldname)}</b>" của mình thành "<b>${escapeHtml(data.newname)}</b>"</p>`;
 								username = data.newname;
 								hidesavebutton();
 								break;
@@ -228,9 +250,9 @@ function connect() {
 						document.getElementById("content").innerHTML = "\t<!-- Chat will be shown here -->"
 						for (const tinnhan of data.data.message) {
 							if (tinnhan.name == username) {
-								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;"> <b>${escapeHtml(tinnhan.name)}:</b> ${escapeHtml(tinnhan.content)} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 							} else {
-								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${escapeHtml(tinnhan.name)}:</b> ${escapeHtml(tinnhan.content)} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 							}
 						}
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tin nhắn</p>`;
@@ -240,7 +262,7 @@ function connect() {
 						switch (data.reason) {
 							case "ErrorWhenGet":
 								alert(`Không thể cập nhật full do đã xảy ra lỗi trên Server. Mở Console để biết thêm`)
-								console.error("[Server] ErrorWhenGet: " + data.error);
+								console.error("[Server] ErrorWhenGet: " + escapeHtml(data.error));
 								break;
 
 							case "UnknownRegister":
@@ -262,9 +284,9 @@ function connect() {
 				switch (data.status) {
 					case true:
 						for (const html of arr) {
-							if (html.innerHTML == ` <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
+							if (html.innerHTML == ` <b>${escapeHtml(data.name)}:</b> ${escapeHtml(data.content)} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
 								html.classList.remove("QueueMessage")
-								html.innerHTML = ` <b>${username}:</b> ${data.content} <br> <i style="font-size: smaller;">Bạn đã gửi thành công vào lúc ${data.timestamp}</i>`
+								html.innerHTML = ` <b>${escapeHtml(username)}:</b> ${escapeHtml(data.content)} <br> <i style="font-size: smaller;">Bạn đã gửi thành công vào lúc ${data.timestamp}</i>`
 								MessageQueue.splice(pos, 1)
 								break;
 							}
@@ -272,7 +294,7 @@ function connect() {
 						break;
 					case false:
 						for (const html of arr) {
-							if (html.innerHTML == ` <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
+							if (html.innerHTML == ` <b>${escapeHtml(data.name)}:</b> ${escapeHtml(data.content)} <br> <i style="font-size: smaller;">Đang gửi...</i>`) {
 								html.classList.remove("QueueMessage")
 								let lydo = "";
 								switch (data.reason) {
@@ -281,7 +303,7 @@ function connect() {
 										break;
 									
 									case "ErrorWhenSend":
-										lydo = "[Server] " + data.error;
+										lydo = "[Server] " + escapeHtml(data.error);
 										break;
 
 									case "WrongFormatContent":
@@ -292,7 +314,7 @@ function connect() {
 										lydo = "Lỗi: " + data.reason
 										break;
 								}
-								html.innerHTML = ` <b>${username}:</b> ${content} <br> <i style="font-size: smaller; color: red;">Bạn đã gửi tin nhắn thất bại: ${lydo}</i>`
+								html.innerHTML = ` <b>${escapeHtml(username)}:</b> ${escapeHtml(content)} <br> <i style="font-size: smaller; color: red;">Bạn đã gửi tin nhắn thất bại: ${lydo}</i>`
 								MessageQueue.splice(pos, 1)
 								break;
 							}
@@ -303,19 +325,19 @@ function connect() {
 			case "receive":
 				switch (data.datatype) {
 					case "change":
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.oldname}</b> đã đổi biệt danh thành "<b>${data.newname}</b>"</p>`;
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.oldname)}</b> đã đổi biệt danh thành "<b>${escapeHtml(data.newname)}</b>"</p>`;
 						break;
 				
 					case "register":
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã tham gia chat</p>`;
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.name)}</b> đã tham gia chat</p>`;
 						break;
 
 					case "message":
-						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${data.timestamp}</i></p>`
+						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${escapeHtml(data.name)}:</b> ${escapeHtml(data.content)} <br> <i style="font-size: smaller;">Gửi vào lúc ${data.timestamp}</i></p>`
 						break;
 
 					case "leave":
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${data.name}</b> đã rời khỏi chat</p>`;
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.name)}</b> đã rời khỏi chat</p>`;
 						break;
 				}
 
