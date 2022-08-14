@@ -230,7 +230,7 @@ function connect() {
 							if (tinnhan.name == username) {
 								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: right; margin-right: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 							} else {
-								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-right: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${tinnhan.name}:</b> ${tinnhan.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 							}
 						}
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tin nhắn</p>`;
@@ -311,7 +311,7 @@ function connect() {
 						break;
 
 					case "message":
-						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-right: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
+						document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${data.name}:</b> ${data.content} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 						break;
 
 					case "leave":
