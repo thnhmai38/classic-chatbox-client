@@ -72,7 +72,7 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 		if (!isConnected) return alert("Bạn chưa kết nối với Server!")
 		nameaction(document.getElementById('username').value)
 	}
-//? SendMethod: Các thủ tục kích hoạt ô Gửi và nút Gửi [enablesend(), disablesend()]
+//? SendMethod: Các thủ tục kích hoạt và Phím tắt ô Gửi và nút Gửi [enablesend(), disablesend(), SendEnter()]
 	function enablesend() {
 		document.getElementById("noidung").removeAttribute("disabled")
 		document.getElementById("send").removeAttribute("disabled")
@@ -94,6 +94,10 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 		if (event.keyCode == 13) {
 			event.preventDefault();
 			if (isConnected === true) {send(document.getElementById('noidung').value);}
+		}
+		if (event.keyCode == 116) {
+			event.preventDefault();
+			if (isConnected === true && !document.getElementById("updatebutton").hasAttribute("disabled")) {get();}
 		}
 	}
 //? AfterDisconnect: Các thủ tục xoay quanh sự kiện Bắt đầu Ngắt kết nối với Server [disconnect(), delayconnect()]
