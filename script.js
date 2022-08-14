@@ -75,6 +75,7 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 	function enablesend() {
 		document.getElementById("noidung").removeAttribute("disabled")
 		document.getElementById("send").removeAttribute("disabled")
+		document.getElementById("noidung").addEventListener("keydown", (event) => SendEnter(event))
 	}
 	
 	function disablesend(can_copy) {
@@ -86,6 +87,14 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 			document.getElementById("send").setAttribute("disabled", true)
 		}
 	}	
+
+	function SendEnter(event) {
+		// Thanks https://stackoverflow.com/questions/905222/prevent-form-submission-on-enter-key-press
+		if (event.keyCode == 13) {
+			event.preventDefault();
+			if (isConnected === true) {send(document.getElementById('noidung').value);}
+		}
+	}
 //? AfterDisconnect: Các thủ tục xoay quanh sự kiện Bắt đầu Ngắt kết nối với Server [disconnect(), delayconnect()]
 	function disconnect() {
 		socket.close();
