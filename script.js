@@ -51,8 +51,7 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 	
 	function saveusername() {
 		if (!isConnected) return alert("Bạn chưa kết nối với Server!")
-		username = document.getElementById('username').value;
-		nameaction(username)
+		nameaction(document.getElementById('username').value)
 	}
 //? SendMethod: Các thủ tục kích hoạt ô Gửi và nút Gửi [enablesend(), disablesend()]
 	function enablesend() {
@@ -121,26 +120,58 @@ function connect() {
 						switch (data.action) {
 							case "register":
 								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đăng ký biệt danh "<b>${data.name}</b>" thành của mình</p>`;
+								username = data.name;
 								hidesavebutton();
 								break;
 							case "change":
 								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đổi biệt danh "<b>${data.oldname}</b>" của mình thành "<b>${data.newname}</b>"</p>`;
+								username = data.newname;
 								hidesavebutton();
 								break;
 							}
 						break;
-
 					case false:
 						switch (data.action) {
 							case "register":
+								switch (data.reason) {
+									case "NameAlreadyUsed":
+										alert(`"${data.name}" đã được sử dụng. Vui lòng đặt một biệt danh khác.`)
+										break;
+								
+									case "WrongFormatName":
+										alert(`Biệt danh của bạn phải có ít nhất 1 ký tự và nhiều nhất 100 ký tự`)
+										break;
 
+									case "ErrorWhenRegister":
+										alert("Đã xảy ra lỗi trên Server khi đăng ký cho bạn. Xem Console để biết thêm.")
+										console.error(`[Server] ` + data.error)
+									
+									default:
+										alert("Đã xảy ra lỗi khi đăng ký tên: \""+ data.reason + "\"")
+										break;
+								}
 								break;
 							case "change":
+								switch (data.reason) {
+									case "NameAlreadyUsed":
+										alert(`"${data.name}" đã được sử dụng. Vui lòng đặt một biệt danh khác.`)
+										break;
+								
+									case "WrongFormatName":
+										alert(`Biệt danh của bạn phải có ít nhất 1 ký tự và nhiều nhất 100 ký tự`)
+										break;
 
+									case "ErrorWhenChange":
+										alert("Đã xảy ra lỗi trên Server khi đổi biệt danh cho bạn. Xem Console để biết thêm.")
+										console.error(`[Server] ` + data.error)
+									
+									default:
+										alert("Đã xảy ra lỗi khi đổi biệt danh: \""+ data.reason + "\"")
+										break;
+								}
 								break;
 						}
 						break;
-					// TODO: Làm Switch Case lỗi cho Case False này
 				}
 				break;
 
