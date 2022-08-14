@@ -299,7 +299,7 @@ function connect() {
 						}
 						break;
 				}
-		// TODO: Còn thiếu case "receive"
+		// TODO: Còn thiếu case "receive", null
 		}
 	});
 }
