@@ -332,7 +332,7 @@ function connect() {
 										break;
 
 									case "ErrorWhenRegister":
-										alert("Đã xảy ra lỗi trên Server khi đăng ký cho bạn. Xem Console để biết thêm.")
+										alert("Đã xảy ra lỗi trên Server khi đăng ký cho bạn. Xem đầu ra Bảng điều khiển để biết thêm thông tin.")
 										console.error(`[Server] ` + data.error)
 									
 									default:
@@ -351,7 +351,7 @@ function connect() {
 										break;
 
 									case "ErrorWhenChange":
-										alert("Đã xảy ra lỗi trên Server khi đổi biệt danh cho bạn. Xem Console để biết thêm.")
+										alert("Đã xảy ra lỗi trên Server khi đổi biệt danh cho bạn. Xem đầu ra Bảng điều khiển để biết thêm thông tin.")
 										console.error(`[Server] ` + data.error)
 									
 									default:
@@ -385,7 +385,7 @@ function connect() {
 					case false:
 						switch (data.reason) {
 							case "ErrorWhenGet":
-								alert(`Không thể cập nhật full do đã xảy ra lỗi trên Server. Mở Console để biết thêm`)
+								alert(`Không thể cập nhật full do đã xảy ra lỗi trên Server. Xem đầu ra Bảng điều khiển để biết thêm thông tin.`)
 								console.error("[Server] ErrorWhenGet: " + escapeHtml(data.error));
 								break;
 
