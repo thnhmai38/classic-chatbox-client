@@ -1,12 +1,75 @@
 const server = "ws://127.0.0.1:5000"
 
-//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected, MessageQueue, connectdelay, Online]
+//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected, MessageQueue, connectdelay, Online, Custom]
 	var socket;
 	var username = "";
 	var isConnected = false;
 	var MessageQueue = [];
 	var connectdelay = false;
 	var Online = [];
+	
+	var Custom = {
+		custom_background: undefined,
+		custom_background_content: undefined,
+		custom_background_list: undefined,
+		custom_background_custom: undefined
+	}
+	const defaultCustom = {
+		custom_background: "aquamarine",
+		custom_background_content: "snow",
+		custom_background_list: "snow",
+		custom_background_custom: "snow"
+	}
+
+//? Custom: Những thứ liên quan tới việc Tùy chỉnh [saveCustom(), customtodefault()]
+	function saveCustom() {
+		if (document.getElementById("custom_background").value) {
+			Custom.custom_background = `url(${document.getElementById("custom_background").value}) fixed`	
+			document.querySelector("html").style.background = Custom.custom_background;
+		} else {
+			Custom.custom_background = defaultCustom.custom_background
+			document.querySelector("html").style.background = Custom.custom_background;
+		}
+
+		if (document.getElementById("custom_background_content").value) {
+			Custom.custom_background_content = `url(${document.getElementById("custom_background_content").value}) fixed`
+			document.querySelector("#content").style.background = Custom.custom_background_content;
+		} else {
+			Custom.custom_background_content = defaultCustom.custom_background_content
+			document.querySelector("#content").style.background = Custom.custom_background_content;
+		}
+
+		if (document.getElementById("custom_background_list").value) {
+			Custom.custom_background_list = `url(${document.getElementById("custom_background_list").value}) fixed`
+			document.querySelector("#list").style.background = Custom.custom_background_list;	
+		} else {
+			Custom.custom_background_list = defaultCustom.custom_background_list;
+			document.querySelector("#list").style.background = Custom.custom_background_list;
+		}
+
+		if (document.getElementById("custom_background_custom").value) {
+			Custom.custom_background_custom = `url(${document.getElementById("custom_background_custom").value}) fixed`
+			document.querySelector("#custom").style.background = Custom.custom_background_custom;
+		} else {
+			Custom.custom_background_custom = defaultCustom.custom_background_custom
+			document.querySelector("#custom").style.background = Custom.custom_background_custom;
+		}
+	}
+
+	function customtodefault() {
+		Custom = defaultCustom;
+
+		document.querySelector("html").style.background = Custom.custom_background;
+		document.querySelector("#content").style.background = Custom.custom_background_content;
+		document.querySelector("#list").style.background = Custom.custom_background_list;	
+		document.querySelector("#custom").style.background = Custom.custom_background_custom;
+
+		document.getElementById("custom_background").value = "";
+		document.getElementById("custom_background_content").value = ""
+		document.getElementById("custom_background_list").value = ""
+		document.getElementById("custom_background_custom").value = ""
+	}
+
 //? HTMLQueryVariable: Các biến chứa nội dung HTML [savenamebutton, connectbutton, disconnectbutton, getbutton, noconnect, connected]
 var savenamebutton = `<button id="savenamebutton" onclick="saveusername()" hidden="true">Lưu</button>`
 const connectbutton = "<button id=\"connect\" onclick=\"connect()\">Kết nối với Server</button>"

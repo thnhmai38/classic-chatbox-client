@@ -28,6 +28,25 @@
         </div>
         <details id="custom">
             <summary>Tùy chỉnh</summary>
+            <b>Paste Link Hình ảnh vào các ô dưới đây (Bỏ trống = Mặc định)</b>
+            <div style="position: relative;">
+                <br>
+                Ảnh nền: <br> <input type="url" id="custom_background" style="width:40%; height:20px; margin-top: 3px;">
+                <br>
+                <br>
+                Ảnh nền Chat: <br> <input type="url" id="custom_background_content" style="width: 40%; height: 20px; margin-top: 3px;">
+                <br>
+                <br>
+                Ảnh nền Danh sách Trực tuyến: <br> <input type="url" id="custom_background_list" style="width: 40%; height: 20px; margin-top: 3px;">
+                <br>
+                <br>
+                Ảnh nền mục Tùy chỉnh: <br> <input type="url" id="custom_background_custom" style="width: 40%; height: 20px; margin-top: 3px;">
+                <br>
+                <br>
+                <button onclick="saveCustom()">Lưu</button>
+                <button style="margin-left: 3px" onclick="customtodefault()">Đặt về Mặc định</button>
+            </div>
+            <br>
         </details>
         <div style="text-align:center; margin-top: 10px; margin-bottom: 10px; color:grey;">
             <b style="font-size: large; margin-bottom:0px">classic-chatbox-client</b>

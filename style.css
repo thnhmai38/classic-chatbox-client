@@ -1,6 +1,6 @@
 html {
     margin: 0;
-    background-color: aquamarine;
+    background: aquamarine;
     height: 100%;
     width: 100%;
 }
@@ -78,7 +78,7 @@ body {
 }
 
 .chat#send:hover {
-    background-color: aliceblue;
+    background: aliceblue;
 }
 
 #alert p {
@@ -100,7 +100,7 @@ details#list {
     position: absolute;
     padding-right: 30px;
     width: 10%;
-    background-color: snow;
+    background: snow;
 }
 
 #list summary {
@@ -130,7 +130,7 @@ details#custom {
     position: sticky;
     
     width: 12%; /* < #content.margin-right*/
-    background-color: snow;
+    background: snow;
 }
 
 #custom summary {
