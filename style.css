@@ -99,7 +99,7 @@ details#list {
     display: block;
     position: absolute;
     padding-right: 30px;
-    
+    width: 10%;
     background-color: snow;
 }
 
@@ -152,4 +152,13 @@ details#custom[open] {
 
 details#custom[open] summary {
     margin-bottom: .5em;
+}
+
+/*=================================*/
+
+#ScrollButton {
+    position: absolute; 
+    text-align: center; 
+    margin-left: calc(80% - 5px);
+    margin-top: -2%;
 }

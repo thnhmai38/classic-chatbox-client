@@ -116,6 +116,7 @@ const defaultList = `<summary>Trực tuyến</summary>`
 		document.getElementById("alert").innerHTML = noconnect
 		document.getElementById('username').removeEventListener('input', changeusername)
 		hidesavebutton()
+		showScrollButton()
 		username = "";
 		if (document.getElementById('noidung').value.length > 0) {
 			disablesend(true)
@@ -151,7 +152,7 @@ const defaultList = `<summary>Trực tuyến</summary>`
 		document.getElementById("updatebutton").removeAttribute("disabled")
 		document.getElementById("updatebutton").textContent = "Cập nhật"
 	}
-//? ListMethod: Các thủ tục liên quan đến danh sách trực tuyến 
+//? ListMethod: Các thủ tục liên quan đến danh sách trực tuyến [UpdateList(), RestoreListToDefault()]
 	function UpdateList() {
 		let tempHTML = `<summary>Trực tuyến (${Online.length})</summary>\n`;
 		for (const nguoidung of Online) {
@@ -164,6 +165,15 @@ const defaultList = `<summary>Trực tuyến</summary>`
 		document.getElementById("list").innerHTML = defaultList
 	}
 
+//? ScrollButtonMethod: Các thủ tục liên quan đến nút Cuộn xuống ngay [showScrollButton()]
+	// Thanks https://stackoverflow.com/a/54529438/16410937
+	function showScrollButton() {
+		if (document.getElementById('content').scrollTop + document.getElementById('content').clientHeight === document.getElementById('content').scrollHeight) {
+			document.getElementById("ScrollButton").setAttribute("hidden", true)
+		} else {
+			document.getElementById("ScrollButton").removeAttribute("hidden")
+		}
+	}
 
 function find(array, name, content) {
 	const query = {
@@ -208,6 +218,7 @@ function connect() {
 			document.getElementById("alert").innerHTML = noconnect
 			document.getElementById('username').removeEventListener('input', changeusername)
 			hidesavebutton()
+			showScrollButton()
 			username = "";
 			if (document.getElementById('noidung').value.length > 0) {
 				disablesend(true)
@@ -398,5 +409,6 @@ function connect() {
 
 			default: break;
 		}
+		showScrollButton()
 	});
 }

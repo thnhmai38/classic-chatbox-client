@@ -18,9 +18,10 @@
         <details id="list" style="margin-left: 0px;">
             <summary>Trực tuyến</summary>
         </details>
-        <div id="content">
+        <div id="content" onscroll="showScrollButton()">
             <!-- Chat will be shown here -->
         </div>
+        <button id="ScrollButton" onclick="document.getElementById('content').scrollTop = document.getElementById('content').scrollHeight;" hidden>↓</button>
         <div id="sendzone">
             <input class="chat" type="text" placeholder="Nội dung" id="noidung" disabled>
             <button class="chat" id="send" onclick="send(document.getElementById('noidung').value);" disabled>Gửi</button>
