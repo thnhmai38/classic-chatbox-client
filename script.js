@@ -21,35 +21,46 @@ const server = "ws://127.0.0.1:5000"
 		custom_background_custom: "snow"
 	}
 
-//? Custom: Những thứ liên quan tới việc Tùy chỉnh [saveCustom(), customtodefault()]
+//? Custom: Những thứ liên quan tới việc Tùy chỉnh [setBackgroundFull(), saveCustom(), customtodefault()]
+	function setBackgroundFull(querySelector) {
+		// Thanks https://www.webfx.com/blog/web-design/responsive-background-image
+			querySelector.style.backgroundPosition = "center center";
+			querySelector.style.backgroundRepeat = "no-repeat";
+			if (querySelector === document.querySelector("html")) {querySelector.style.backgroundAttachment = "fixed";}
+			querySelector.style.backgroundSize = "cover";
+	}
+
 	function saveCustom() {
 		if (document.getElementById("custom_background").value) {
-			Custom.custom_background = `url(${document.getElementById("custom_background").value}) fixed`	
+			Custom.custom_background = `url(${document.getElementById("custom_background").value})`	
 			document.querySelector("html").style.background = Custom.custom_background;
+			setBackgroundFull(document.querySelector("html"))
 		} else {
 			Custom.custom_background = defaultCustom.custom_background
 			document.querySelector("html").style.background = Custom.custom_background;
 		}
 
 		if (document.getElementById("custom_background_content").value) {
-			Custom.custom_background_content = `url(${document.getElementById("custom_background_content").value}) fixed`
+			Custom.custom_background_content = `url(${document.getElementById("custom_background_content").value})`
 			document.querySelector("#content").style.background = Custom.custom_background_content;
+			setBackgroundFull(document.querySelector("#content"))
 		} else {
 			Custom.custom_background_content = defaultCustom.custom_background_content
 			document.querySelector("#content").style.background = Custom.custom_background_content;
 		}
-
 		if (document.getElementById("custom_background_list").value) {
-			Custom.custom_background_list = `url(${document.getElementById("custom_background_list").value}) fixed`
+			Custom.custom_background_list = `url(${document.getElementById("custom_background_list").value})`
 			document.querySelector("#list").style.background = Custom.custom_background_list;	
+			setBackgroundFull(document.querySelector("#list"))
 		} else {
 			Custom.custom_background_list = defaultCustom.custom_background_list;
 			document.querySelector("#list").style.background = Custom.custom_background_list;
 		}
 
 		if (document.getElementById("custom_background_custom").value) {
-			Custom.custom_background_custom = `url(${document.getElementById("custom_background_custom").value}) fixed`
+			Custom.custom_background_custom = `url(${document.getElementById("custom_background_custom").value})`
 			document.querySelector("#custom").style.background = Custom.custom_background_custom;
+			setBackgroundFull(document.querySelector("#custom"))
 		} else {
 			Custom.custom_background_custom = defaultCustom.custom_background_custom
 			document.querySelector("#custom").style.background = Custom.custom_background_custom;
@@ -59,10 +70,11 @@ const server = "ws://127.0.0.1:5000"
 	function customtodefault() {
 		Custom = defaultCustom;
 
-		document.querySelector("html").style.background = Custom.custom_background;
-		document.querySelector("#content").style.background = Custom.custom_background_content;
-		document.querySelector("#list").style.background = Custom.custom_background_list;	
-		document.querySelector("#custom").style.background = Custom.custom_background_custom;
+		document.querySelector("html").style.removeProperty("background")
+		document.querySelector("#content").style.removeProperty("background")
+		document.querySelector("#list").style.removeProperty("background")	
+		document.querySelector("#custom").style.removeProperty("background")
+		// Thanks https://stackoverflow.com/a/2028029/16410937
 
 		document.getElementById("custom_background").value = "";
 		document.getElementById("custom_background_content").value = ""
