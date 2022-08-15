@@ -305,6 +305,7 @@ function connect() {
 						UpdateList()
 
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tất cả</p>`;
+						document.getElementById("content").scrollTop = document.getElementById("content").scrollHeight;
 						break;
 				
 					case false:
