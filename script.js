@@ -1,11 +1,12 @@
 const server = "ws://127.0.0.1:5000"
 
-//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected, MessageQueue]
+//? GlobalVariable: Các biến để lưu dữ liệu trong chương trình [socket, username, isConnected, MessageQueue, connectdelay, Online]
 	var socket;
 	var username = "";
 	var isConnected = false;
 	var MessageQueue = [];
 	var connectdelay = false;
+	var Online = [];
 //? HTMLQueryVariable: Các biến chứa nội dung HTML [savenamebutton, connectbutton, disconnectbutton, getbutton, noconnect, connected]
 var savenamebutton = `<button id="savenamebutton" onclick="saveusername()" hidden="true">Lưu</button>`
 const connectbutton = "<button id=\"connect\" onclick=\"connect()\">Kết nối với Server</button>"
@@ -13,6 +14,7 @@ const disconnectbutton = "<button id=\"disconnect\" onclick=\"disconnect();\">Ng
 const getbutton = "<button onclick=\"get()\" id=\"updatebutton\">Cập nhật</button>"
 const noconnect = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username" disabled> ${savenamebutton} | <b>Trạng thái: </b>Chưa kết nối với Server | ` + connectbutton + "</p>"
 const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh" id="username"> ${savenamebutton} | <b>Trạng thái: </b>Đã kết nối với Server | ` + disconnectbutton + " " + getbutton + "</p>"
+const defaultList = `<summary>Trực tuyến</summary>`
 
 //? Method: Các Thủ tục gửi tin nhắn lên Server [nameaction(), get(), send()]
 	function nameaction(name) {
@@ -52,19 +54,10 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 	}	
 //? UsernameMethod: Các thủ tục xoay quanh ô nhập Biệt danh [changeusername(), saveusername()]
 	function changeusername(e) {
-		if (username !== e.target.value) {
+		if (username !== e.target.value && e.target.value.length>=1 && e.target.value.length<=100) {
 			showsavebutton()
 		} else {
 			hidesavebutton()
-		}
-		if (e.target.value == "") {
-			e.target.value = username
-			hidesavebutton()
-		} else {
-			if (e.target.value.length > 100) {
-				e.target.value = username
-				hidesavebutton()
-			}
 		}
 	}
 	
@@ -72,6 +65,13 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 		if (!isConnected) return alert("Bạn chưa kết nối với Server!")
 		nameaction(document.getElementById('username').value)
 	}
+
+	function RestoreUsername(e) {
+		if (e.target.value.length<1 || e.target.value.length>100) {
+			document.getElementById("username").value = username
+		}
+	}
+
 //? SendMethod: Các thủ tục kích hoạt và Phím tắt ô Gửi và nút Gửi [enablesend(), disablesend(), SendEnter()]
 	function enablesend() {
 		document.getElementById("noidung").removeAttribute("disabled")
@@ -110,6 +110,7 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 
 	function delayconnect() {
 		connectdelay = true;
+		RestoreListToDefault()
 		document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
 		isConnected = false;
 		document.getElementById("alert").innerHTML = noconnect
@@ -150,6 +151,19 @@ const connected = `<p> <input class="chat" type="text" placeholder="Biệt danh"
 		document.getElementById("updatebutton").removeAttribute("disabled")
 		document.getElementById("updatebutton").textContent = "Cập nhật"
 	}
+//? ListMethod: Các thủ tục liên quan đến danh sách trực tuyến 
+	function UpdateList() {
+		let tempHTML = `<summary>Trực tuyến (${Online.length})</summary>\n`;
+		for (const nguoidung of Online) {
+			tempHTML = tempHTML.concat((nguoidung == username) ? `<p style="word-wrap: break-word;">${escapeHtml(nguoidung)} <b>(Bạn)</b></p>` : `<p style="word-wrap: break-word;">${escapeHtml(nguoidung)}</p>`)
+		}
+		document.getElementById("list").innerHTML = tempHTML 
+	}
+
+	function RestoreListToDefault() {
+		document.getElementById("list").innerHTML = defaultList
+	}
+
 
 function find(array, name, content) {
 	const query = {
@@ -188,6 +202,7 @@ function connect() {
 
 	socket.addEventListener('close', (event) => {
 		if (connectdelay === false) {
+			RestoreListToDefault()
 			document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>Đã ngắt kết nối tới Server</b></p>`
 			isConnected = false;
 			document.getElementById("alert").innerHTML = noconnect
@@ -204,6 +219,7 @@ function connect() {
 	socket.addEventListener('open', (event) => {
 		document.getElementById("alert").innerHTML = connected
 		document.getElementById('username').addEventListener('input', changeusername)
+		document.getElementById('username').addEventListener('change', RestoreUsername)
 		isConnected = true;
 	});
 
@@ -224,6 +240,8 @@ function connect() {
 								document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Bạn đã đổi biệt danh "<b>${escapeHtml(data.oldname)}</b>" của mình thành "<b>${escapeHtml(data.newname)}</b>"</p>`;
 								username = data.newname;
 								hidesavebutton();
+								Online[Online.indexOf(data.oldname)] = data.newname;
+								UpdateList()
 								break;
 							}
 						break;
@@ -283,7 +301,10 @@ function connect() {
 								document.getElementById('content').innerHTML = document.getElementById('content').innerHTML + `<p style="text-align: left; margin-left: 7px;"> <b>${escapeHtml(tinnhan.name)}:</b> ${escapeHtml(tinnhan.content)} <br> <i style="font-size: smaller;">Gửi vào lúc ${tinnhan.timestamp}</i></p>`
 							}
 						}
-						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tin nhắn</p>`;
+						Online = data.data.online;
+						UpdateList()
+
+						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;">Cập nhật tất cả</p>`;
 						break;
 				
 					case false:
@@ -349,15 +370,18 @@ function connect() {
 						}
 						break;
 				}
-
 			case "receive":
 				switch (data.datatype) {
 					case "change":
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.oldname)}</b> đã đổi biệt danh thành "<b>${escapeHtml(data.newname)}</b>"</p>`;
+						Online[Online.indexOf(data.oldname)] = data.newname;
+						UpdateList()
 						break;
 				
 					case "register":
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.name)}</b> đã tham gia chat</p>`;
+						Online.push(data.name)
+						UpdateList()
 						break;
 
 					case "message":
@@ -366,6 +390,8 @@ function connect() {
 
 					case "leave":
 						document.getElementById(`content`).innerHTML = document.getElementById(`content`).innerHTML + `<p class="smalltext" style="text-align: center; font-size: x-small; color: grey;"><b>${escapeHtml(data.name)}</b> đã rời khỏi chat</p>`;
+						Online.splice(Online.indexOf(data.name), 1)
+						UpdateList()
 						break;
 				}
 

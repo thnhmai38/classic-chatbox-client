@@ -89,3 +89,67 @@ body {
 .QueueMessage {
     color: gray;
 }
+
+/*=================================*/
+
+details#list {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: .5em .5em 0;
+    display: block;
+    position: absolute;
+    padding-right: 30px;
+    
+    background-color: snow;
+}
+
+#list summary {
+    font-weight: bold;
+    margin: -.5em -.5em 0;
+    padding: .5em;
+}
+
+details#list[open] {
+    width: 16%; /* < #content.margin-right*/
+    padding: .5em;
+    height: 72%;
+}
+
+details#list[open] summary {
+    margin-bottom: .5em;
+}
+
+/*=================================*/
+
+details#custom {
+    margin-top: 2rem;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: .5em .5em 0;
+    display: block;
+    position: sticky;
+    
+    width: 12%; /* < #content.margin-right*/
+    background-color: snow;
+}
+
+#custom summary {
+    font-weight: bold;
+    margin: -.5em -.5em 0;
+    padding: .5em;
+}
+
+details#custom[open] {
+    padding: .5em;
+    height: 100%;
+    width: 92%;
+    margin-left: 2%;
+    margin-right: 2%;
+
+    overflow-wrap: break-word;
+    overflow-y: auto;
+}
+
+details#custom[open] summary {
+    margin-bottom: .5em;
+}
